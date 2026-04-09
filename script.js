@@ -25,11 +25,14 @@ window.downloadPDF = async function () {
     doc.setDrawColor(200, 200, 200);
     doc.line(15, 30, 195, 30);
 
-    // 2. TITLES
+    // 2. DATA COLLECTION
     const title = document.getElementById("title").value || "EVENT TITLE";
     const subtitle = document.getElementById("subtitle").value || "SUBTITLE";
     const desc = document.getElementById("description").value || "";
+    const date = document.getElementById("date").value || "TBA";
+    const venue = document.getElementById("venue").value || "TBA";
 
+    // 3. DRAW TITLES & DESCRIPTION
     doc.setFontSize(22);
     doc.setTextColor(26, 35, 126);
     doc.text(title.toUpperCase(), 105, 42, { align: "center" });
@@ -38,15 +41,13 @@ window.downloadPDF = async function () {
     doc.setTextColor(100, 100, 100);
     doc.text(subtitle.toUpperCase(), 105, 49, { align: "center" });
 
-    // --- NEW: EVENT DESCRIPTION SECTION ---
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(60, 60, 60);
-    // This part wraps the text so it stays inside the page margins
     const splitDesc = doc.splitTextToSize(desc, 160); 
     doc.text(splitDesc, 105, 60, { align: "center" });
 
-    // 3. GUEST CARDS
+    // 4. GUEST CARDS
     doc.setFillColor(30, 136, 229);
     doc.roundedRect(25, 95, 75, 95, 8, 8, 'F');
     doc.roundedRect(110, 95, 75, 95, 8, 8, 'F');
@@ -60,28 +61,32 @@ window.downloadPDF = async function () {
     doc.setFontSize(11);
     doc.text((document.getElementById("guest1Name").value || "NAME").toUpperCase(), 62.5, 170, { align: "center" });
     doc.text((document.getElementById("guest2Name").value || "NAME").toUpperCase(), 147.5, 170, { align: "center" });
-    doc.setFontSize(8);
-    doc.text(document.getElementById("guest1Role").value || "ROLE", 62.5, 180, { align: "center" });
-    doc.text(document.getElementById("guest2Role").value || "ROLE", 147.5, 180, { align: "center" });
 
-    // 4. EVENT DETAILS (Date/Time/Venue)
+    // 5. EVENT DETAILS
     doc.setTextColor(0, 0, 0);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
-    doc.text(`DATE  : ${document.getElementById("date").value || "TBA"}`, 25, 215);
+    doc.text(`DATE  : ${date}`, 25, 215);
     doc.text(`TIME  : ${document.getElementById("time").value || "TBA"}`, 25, 225);
-    doc.text(`VENUE : ${document.getElementById("venue").value || "TBA"}`, 25, 235);
+    doc.text(`VENUE : ${venue}`, 25, 235);
 
-    // 5. QR CODE
-    const qrData = `EVENT: ${title}\nVENUE: ${document.getElementById("venue").value}`;
+    // 6. --- UPGRADED SMART QR CODE ---
+    // Includes Description, Title, and Venue
+    const qrData = `EVENT: ${title}\nABOUT: ${desc}\nWHERE: ${venue}\nWHEN: ${date}`;
     const qrDiv = document.createElement("div");
-    new QRCode(qrDiv, { text: qrData, width: 128, height: 128 });
+    
+    new QRCode(qrDiv, { 
+        text: qrData, 
+        width: 256, 
+        height: 256,
+        correctLevel: QRCode.CorrectLevel.M 
+    });
 
     setTimeout(() => {
         const canvas = qrDiv.querySelector("canvas");
         if (canvas) { doc.addImage(canvas.toDataURL("image/png"), 'PNG', 145, 205, 35, 35); }
 
-        // 6. COORDINATORS
+        // 7. COORDINATORS
         doc.setFillColor(149, 117, 205);
         doc.roundedRect(25, 250, 75, 30, 10, 10, 'F');
         doc.roundedRect(110, 250, 75, 30, 10, 10, 'F');
@@ -97,10 +102,10 @@ window.downloadPDF = async function () {
         doc.text(document.getElementById("facultyPhone").value || "", 62.5, 274, { align: "center" });
         doc.text(document.getElementById("studentPhone").value || "", 147.5, 274, { align: "center" });
 
-        // 7. FOOTER
+        // 8. FOOTER
         doc.setFillColor(30, 136, 229);
         doc.rect(0, 288, 210, 9, 'F');
 
-        doc.save("VIT_Official_Invitation.pdf");
-    }, 600);
+        doc.save("VIT_Smart_Invitation.pdf");
+    }, 800); // Increased delay slightly to handle the larger QR data
 };
