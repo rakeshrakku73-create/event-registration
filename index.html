@@ -11,16 +11,21 @@
 <body>
 
 <div class="form-container">
-    <h2>Invitation Generator</h2>
+    <h2>Official Invitation Generator</h2>
 
-    <input type="text" id="title" placeholder="Event Title (e.g., CLOUD COMPUTING WORKSHOP)">
-    <input type="text" id="subtitle" placeholder="Subtitle (e.g., Deep Dive into PaaS)">
+    <div class="row">
+        <label><b>Upload Header Logo (e.g. VIT/NVIDIA):</b></label>
+        <input type="file" id="topLogo" accept="image/*">
+    </div>
+
+    <input type="text" id="title" placeholder="Event Title (e.g., CRICKET TALK)">
+    <input type="text" id="subtitle" placeholder="Subtitle (e.g., CRICKET MEET STUDENTS)">
     <textarea id="description" placeholder="Brief event description..."></textarea>
 
     <div class="row" style="display: flex; gap: 10px;">
-        <input type="text" id="date" placeholder="Date (e.g., 15/04/2026)">
-        <input type="text" id="time" placeholder="Time (e.g., 10:00 AM)">
-        <input type="text" id="venue" placeholder="Venue (e.g., SJT Hall 222)">
+        <input type="text" id="date" placeholder="Date (e.g., 11/6/2026)">
+        <input type="text" id="time" placeholder="Time (e.g., 1:00 PM)">
+        <input type="text" id="venue" placeholder="Venue (e.g., Ambedkar Auditorium)">
     </div>
 
     <div class="row" style="display: flex; gap: 10px; margin-top: 10px;">
@@ -39,8 +44,14 @@
     </div>
 
     <div class="row" style="display: flex; gap: 10px; margin-top: 10px;">
-        <input type="text" id="facultyName" placeholder="Faculty Coordinator">
-        <input type="text" id="studentName" placeholder="Student Coordinator">
+        <div style="flex: 1;">
+            <input type="text" id="facultyName" placeholder="Faculty Coordinator">
+            <input type="text" id="facultyPhone" placeholder="Faculty Phone Number">
+        </div>
+        <div style="flex: 1;">
+            <input type="text" id="studentName" placeholder="Student Coordinator">
+            <input type="text" id="studentPhone" placeholder="Student Phone Number">
+        </div>
     </div>
 
     <button onclick="downloadPDF()" style="margin-top: 20px;">Download Official Invitation</button>
