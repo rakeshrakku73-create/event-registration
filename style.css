@@ -1,0 +1,7 @@
+body { font-family: Arial, sans-serif; background: #f4f6fb; margin: 0; padding: 20px; }
+.form-container { background: white; max-width: 800px; margin: auto; padding: 30px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+input, textarea, select { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
+.row { display: flex; gap: 15px; align-items: center; }
+.row input, .row select { flex: 1; }
+button { background: #3f51b5; color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; width: 100%; }
+button:hover { background: #2f3e9e; }
