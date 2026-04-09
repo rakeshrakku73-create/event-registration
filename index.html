@@ -1,40 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>VIT Invitation Generator</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <title>VIT Invitation Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+
 <div class="form-container">
-    <h2>Create Invitation</h2>
-    <input type="text" id="title" placeholder="Event Title">
-    <input type="text" id="subtitle" placeholder="Subtitle">
-    <textarea id="description" placeholder="Description"></textarea>
-    <div class="row">
-        <input type="text" id="date" placeholder="Date">
-        <input type="text" id="time" placeholder="Time">
-        <input type="text" id="venue" placeholder="Venue">
-    </div>
-    <div class="row">
-        <label>Guests:</label>
-        <select id="guestCount">
-            <option value="1">1</option>
-            <option value="2" selected>2</option>
-            <option value="3">3</option>
-        </select>
-    </div>
-    <div id="guestFields"></div>
-    <div class="row">
-        <input type="file" id="leftSponsor">
-        <input type="file" id="rightSponsor">
-    </div>
-    <input type="text" id="eventLink" placeholder="QR Link Details">
-    <h3>Coordinators</h3>
-    <input type="text" id="facultyName" placeholder="Faculty Name">
-    <input type="text" id="studentName" placeholder="Student Name">
-    <button onclick="downloadPDF()">Download Invitation</button>
+    <h2>Create Invitation</h2>
+
+    <input type="text" id="title" placeholder="Event Title (e.g., CRICKET TALK)">
+    <input type="text" id="subtitle" placeholder="Subtitle (e.g., CRICKET MEET STUDENTS)">
+    <textarea id="description" placeholder="Description of the event..."></textarea>
+
+    <div class="row">
+        <input type="text" id="date" placeholder="Date (e.g., 11/6/2026)">
+        <input type="text" id="time" placeholder="Time (e.g., 1:00 PM)">
+        <input type="text" id="venue" placeholder="Venue (e.g., Ambedkar Auditorium)">
+    </div>
+
+    <input type="text" id="eventLink" placeholder="Event Details Link (for QR code)">
+
+        <div class="row">
+        <div>
+            <label>Guest 1 Photo:</label>
+            <input type="file" id="guest1Photo" accept="image/*">
+        </div>
+        <div>
+            <label>Guest 2 Photo:</label>
+            <input type="file" id="guest2Photo" accept="image/*">
+        </div>
+    </div>
+    <div class="row">
+        <input type="text" id="guest1Name" placeholder="Guest 1 Name (e.g., MS DHONI)">
+        <input type="text" id="guest2Name" placeholder="Guest 2 Name (e.g., VIRAT KOHLI)">
+    </div>
+    <div class="row">
+        <input type="text" id="guest1Role" placeholder="Guest 1 Role (e.g., CRICKETER)">
+        <input type="text" id="guest2Role" placeholder="Guest 2 Role (e.g., CRICKETER)">
+    </div>
+
+        <div class="row">
+        <input type="text" id="facultyName" placeholder="Faculty Coordinator Name">
+        <input type="text" id="studentName" placeholder="Student Coordinator Name">
+    </div>
+
+    <button onclick="downloadPDF()">Download Invitation</button>
+
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="script.js"></script>
 </body>
