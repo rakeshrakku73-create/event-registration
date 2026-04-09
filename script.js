@@ -12,26 +12,33 @@ window.downloadPDF = async function () {
     const doc = new jsPDF();
     const w = 210;
 
-    // 1. HEADER LOGOS (Placeholder Text)
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(26, 35, 126);
-    doc.setFontSize(22);
-    doc.text("VIT", 105, 18, { align: "center" });
-    doc.setFontSize(8);
-    doc.text("Vellore Institute of Technology", 105, 22, { align: "center" });
+    // 1. TOP LOGO GENERATOR LOGIC
+    const topLogoFile = document.getElementById("topLogo").files[0];
+    if (topLogoFile) {
+        const logoBase64 = await getBase64(topLogoFile);
+        // Places logo at the top center
+        doc.addImage(logoBase64, 'PNG', 85, 10, 40, 20); 
+    } else {
+        // Fallback text if no logo is uploaded
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(26, 35, 126);
+        doc.setFontSize(20);
+        doc.text("VIT", 105, 20, { align: "center" });
+    }
+
     doc.setDrawColor(200, 200, 200);
-    doc.line(15, 25, 195, 25);
+    doc.line(15, 32, 195, 32);
 
     // 2. EVENT TITLES
-    const title = document.getElementById("title").value || "CRICKET TALK";
-    const subtitle = document.getElementById("subtitle").value || "CRICKET MEET STUDENTS";
-    const desc = document.getElementById("description").value || "";
+    const title = document.getElementById("title").value || "EVENT TITLE";
+    const subtitle = document.getElementById("subtitle").value || "SUBTITLE";
 
     doc.setFontSize(24);
-    doc.text(title.toUpperCase(), 105, 40, { align: "center" });
+    doc.setTextColor(26, 35, 126);
+    doc.text(title.toUpperCase(), 105, 45, { align: "center" });
     doc.setFontSize(14);
     doc.setTextColor(100, 100, 100);
-    doc.text(subtitle, 105, 50, { align: "center" });
+    doc.text(subtitle, 105, 55, { align: "center" });
 
     // 3. GUEST CARDS
     doc.setFillColor(30, 136, 229);
@@ -45,20 +52,17 @@ window.downloadPDF = async function () {
 
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(11);
-    doc.text((document.getElementById("guest1Name").value || "MS DHONI").toUpperCase(), 62.5, 170, { align: "center" });
-    doc.text((document.getElementById("guest2Name").value || "VIRAT KOHLI").toUpperCase(), 147.5, 170, { align: "center" });
-    doc.setFontSize(9);
-    doc.text(document.getElementById("guest1Role").value || "CRICKETER", 62.5, 180, { align: "center" });
-    doc.text(document.getElementById("guest2Role").value || "CRICKETER", 147.5, 180, { align: "center" });
+    doc.text((document.getElementById("guest1Name").value || "GUEST 1").toUpperCase(), 62.5, 170, { align: "center" });
+    doc.text((document.getElementById("guest2Name").value || "GUEST 2").toUpperCase(), 147.5, 170, { align: "center" });
 
     // 4. EVENT DETAILS
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(10);
-    doc.text(`DATE  : ${document.getElementById("date").value || "11/6/2026"}`, 25, 215);
-    doc.text(`TIME  : ${document.getElementById("time").value || "1.00 PM"}`, 25, 225);
-    doc.text(`VENUE : ${document.getElementById("venue").value || "AMBEDKAR AUDITORIUM"}`, 25, 235);
+    doc.text(`DATE  : ${document.getElementById("date").value || "TBA"}`, 25, 215);
+    doc.text(`TIME  : ${document.getElementById("time").value || "TBA"}`, 25, 225);
+    doc.text(`VENUE : ${document.getElementById("venue").value || "TBA"}`, 25, 235);
 
-    // 5. SMART QR CODE
+    // 5. QR CODE
     const qrData = `EVENT: ${title}\nVENUE: ${document.getElementById("venue").value}`;
     const qrDiv = document.createElement("div");
     new QRCode(qrDiv, { text: qrData, width: 128, height: 128 });
@@ -67,31 +71,26 @@ window.downloadPDF = async function () {
         const canvas = qrDiv.querySelector("canvas");
         if (canvas) { doc.addImage(canvas.toDataURL("image/png"), 'PNG', 145, 205, 35, 35); }
 
-        // 6. COORDINATORS (FIXED: Showing both Label and Name)
-        const facName = document.getElementById("facultyName").value || "SURESH";
-        const stuName = document.getElementById("studentName").value || "DHANUSH";
-
+        // 6. COORDINATORS (FIXED LABELS + NAMES)
         doc.setFillColor(149, 117, 205);
-        doc.roundedRect(25, 250, 75, 28, 10, 10, 'F'); // Faculty Box
-        doc.roundedRect(110, 250, 75, 28, 10, 10, 'F'); // Student Box
+        doc.roundedRect(25, 250, 75, 28, 10, 10, 'F');
+        doc.roundedRect(110, 250, 75, 28, 10, 10, 'F');
 
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(8);
-        // Top Labels
         doc.text("FACULTY COORDINATOR", 62.5, 258, { align: "center" });
         doc.text("STUDENT COORDINATOR", 147.5, 258, { align: "center" });
-        // Actual Names
+        
         doc.setFontSize(11);
-        doc.text(facName.toUpperCase(), 62.5, 266, { align: "center" });
-        doc.text(stuName.toUpperCase(), 147.5, 266, { align: "center" });
+        doc.text((document.getElementById("facultyName").value || "NAME").toUpperCase(), 62.5, 268, { align: "center" });
+        doc.text((document.getElementById("studentName").value || "NAME").toUpperCase(), 147.5, 268, { align: "center" });
 
-        // 7. FOOTER BAR
+        // 7. FOOTER
         doc.setFillColor(30, 136, 229);
         doc.rect(0, 288, 210, 9, 'F');
         doc.setFontSize(8);
         doc.text("instagram: @vit_university", 20, 294);
         doc.text("email: events@vit.ac.in", 105, 294, { align: "center" });
-        doc.text("linkedin: VIT-Vellore", 160, 294);
 
         doc.save("VIT_Official_Invitation.pdf");
     }, 600);
