@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VIT Invitation Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<div class="form-container">
+    <h2>Create Invitation</h2>
+    <input type="text" id="title" placeholder="Event Title">
+    <input type="text" id="subtitle" placeholder="Subtitle">
+    <textarea id="description" placeholder="Description"></textarea>
+    <div class="row">
+        <input type="text" id="date" placeholder="Date">
+        <input type="text" id="time" placeholder="Time">
+        <input type="text" id="venue" placeholder="Venue">
+    </div>
+    <div class="row">
+        <label>Guests:</label>
+        <select id="guestCount">
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+        </select>
+    </div>
+    <div id="guestFields"></div>
+    <div class="row">
+        <input type="file" id="leftSponsor">
+        <input type="file" id="rightSponsor">
+    </div>
+    <input type="text" id="eventLink" placeholder="QR Link Details">
+    <h3>Coordinators</h3>
+    <input type="text" id="facultyName" placeholder="Faculty Name">
+    <input type="text" id="studentName" placeholder="Student Name">
+    <button onclick="downloadPDF()">Download Invitation</button>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
