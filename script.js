@@ -12,31 +12,39 @@ window.downloadPDF = async function () {
     const doc = new jsPDF();
     const w = 210;
 
-    // 1. HEADER LOGO GENERATOR
+    // 1. LOGO SECTION
     const topLogoFile = document.getElementById("topLogo").files[0];
     if (topLogoFile) {
-        const logoBase64 = await getBase64(topLogoFile);
-        doc.addImage(logoBase64, 'PNG', 85, 10, 40, 20); // Top Center
+        doc.addImage(await getBase64(topLogoFile), 'PNG', 85, 8, 40, 20);
     } else {
         doc.setFont("helvetica", "bold");
         doc.setTextColor(26, 35, 126);
         doc.setFontSize(20);
-        doc.text("VIT", 105, 20, { align: "center" });
+        doc.text("VIT", 105, 18, { align: "center" });
     }
     doc.setDrawColor(200, 200, 200);
-    doc.line(15, 32, 195, 32);
+    doc.line(15, 30, 195, 30);
 
-    // 2. TEXT FIELDS
+    // 2. TITLES
     const title = document.getElementById("title").value || "EVENT TITLE";
     const subtitle = document.getElementById("subtitle").value || "SUBTITLE";
     const desc = document.getElementById("description").value || "";
 
     doc.setFontSize(22);
     doc.setTextColor(26, 35, 126);
-    doc.text(title.toUpperCase(), 105, 45, { align: "center" });
+    doc.text(title.toUpperCase(), 105, 42, { align: "center" });
+    
     doc.setFontSize(12);
     doc.setTextColor(100, 100, 100);
-    doc.text(subtitle, 105, 52, { align: "center" });
+    doc.text(subtitle.toUpperCase(), 105, 49, { align: "center" });
+
+    // --- NEW: EVENT DESCRIPTION SECTION ---
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(60, 60, 60);
+    // This part wraps the text so it stays inside the page margins
+    const splitDesc = doc.splitTextToSize(desc, 160); 
+    doc.text(splitDesc, 105, 60, { align: "center" });
 
     // 3. GUEST CARDS
     doc.setFillColor(30, 136, 229);
@@ -52,12 +60,13 @@ window.downloadPDF = async function () {
     doc.setFontSize(11);
     doc.text((document.getElementById("guest1Name").value || "NAME").toUpperCase(), 62.5, 170, { align: "center" });
     doc.text((document.getElementById("guest2Name").value || "NAME").toUpperCase(), 147.5, 170, { align: "center" });
-    doc.setFontSize(9);
+    doc.setFontSize(8);
     doc.text(document.getElementById("guest1Role").value || "ROLE", 62.5, 180, { align: "center" });
     doc.text(document.getElementById("guest2Role").value || "ROLE", 147.5, 180, { align: "center" });
 
-    // 4. EVENT DETAILS
+    // 4. EVENT DETAILS (Date/Time/Venue)
     doc.setTextColor(0, 0, 0);
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
     doc.text(`DATE  : ${document.getElementById("date").value || "TBA"}`, 25, 215);
     doc.text(`TIME  : ${document.getElementById("time").value || "TBA"}`, 25, 225);
@@ -72,12 +81,7 @@ window.downloadPDF = async function () {
         const canvas = qrDiv.querySelector("canvas");
         if (canvas) { doc.addImage(canvas.toDataURL("image/png"), 'PNG', 145, 205, 35, 35); }
 
-        // 6. COORDINATORS (FIXED: BOTH LABEL & NAME)
-        const facName = document.getElementById("facultyName").value || "SURESH";
-        const facPh = document.getElementById("facultyPhone").value || "";
-        const stuName = document.getElementById("studentName").value || "DHANUSH";
-        const stuPh = document.getElementById("studentPhone").value || "";
-
+        // 6. COORDINATORS
         doc.setFillColor(149, 117, 205);
         doc.roundedRect(25, 250, 75, 30, 10, 10, 'F');
         doc.roundedRect(110, 250, 75, 30, 10, 10, 'F');
@@ -86,14 +90,16 @@ window.downloadPDF = async function () {
         doc.setFontSize(7);
         doc.text("FACULTY COORDINATOR", 62.5, 257, { align: "center" });
         doc.text("STUDENT COORDINATOR", 147.5, 257, { align: "center" });
-        
         doc.setFontSize(10);
-        doc.text(facName.toUpperCase(), 62.5, 266, { align: "center" });
-        doc.text(stuName.toUpperCase(), 147.5, 266, { align: "center" });
-        
+        doc.text((document.getElementById("facultyName").value || "NAME").toUpperCase(), 62.5, 266, { align: "center" });
+        doc.text((document.getElementById("studentName").value || "NAME").toUpperCase(), 147.5, 266, { align: "center" });
         doc.setFontSize(8);
-        doc.text(facPh, 62.5, 274, { align: "center" });
-        doc.text(stuPh, 147.5, 274, { align: "center" });
+        doc.text(document.getElementById("facultyPhone").value || "", 62.5, 274, { align: "center" });
+        doc.text(document.getElementById("studentPhone").value || "", 147.5, 274, { align: "center" });
+
+        // 7. FOOTER
+        doc.setFillColor(30, 136, 229);
+        doc.rect(0, 288, 210, 9, 'F');
 
         doc.save("VIT_Official_Invitation.pdf");
     }, 600);
