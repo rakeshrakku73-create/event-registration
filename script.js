@@ -87,17 +87,29 @@ window.downloadPDF = async function () {
     doc.text(`📍 ${venue}`, 30, 250);
 
     // 7. QR Code Section
-    doc.setFontSize(8);
-    doc.text("Scan for Event Details", 145, 220, { align: "center" });
+    // --- QR CODE GENERATION SECTION ---
+    // This creates a text summary for the QR code instead of just a website link
+    const qrDataString = `EVENT: ${title}\nDATE: ${date}\nTIME: ${time}\nVENUE: ${venue}`;
+
     const qrDiv = document.createElement("div");
-    new QRCode(qrDiv, qrLink);
-    
+    new QRCode(qrDiv, {
+        text: qrDataString,
+        width: 128,
+        height: 128
+    });
+
     setTimeout(() => {
         const qrCanvas = qrDiv.querySelector("canvas");
         if (qrCanvas) {
             const qrData = qrCanvas.toDataURL("image/png");
-            doc.addImage(qrData, 'PNG', 130, 225, 30, 30);
+            doc.addImage(qrData, 'PNG', 150, 200, 35, 35); // Adjust position as needed
+            doc.setTextColor(100, 100, 100);
+            doc.setFontSize(7);
+            doc.text("SCAN FOR EVENT DETAILS", 167.5, 240, { align: "center" });
         }
+        doc.save("VIT_Professional_Invitation.pdf");
+    }, 500);
+    // --- END OF SECTION ---
 
         // 8. Coordinator Boxes (Purple/Blue rounded rectangles)
         doc.setFillColor(149, 117, 205);
