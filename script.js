@@ -1,46 +1,45 @@
 window.downloadPDF = async function () {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    
+
+    // 1. Add Background Color to the PDF
+    doc.setFillColor(245, 247, 251); // Light grey-blue background
+    doc.rect(0, 0, 210, 297, 'F');
+
+    // 2. Add a Decorative Border
+    doc.setDrawColor(26, 35, 126); // Dark blue
+    doc.setLineWidth(2);
+    doc.rect(10, 10, 190, 277); // Outer border
+
     const title = document.getElementById("title").value || "Event Invitation";
-    const subtitle = document.getElementById("subtitle").value || "";
     const date = document.getElementById("date").value || "";
     const venue = document.getElementById("venue").value || "";
-    const faculty = document.getElementById("facultyName").value || "";
-    const student = document.getElementById("studentName").value || "";
-    const qrLink = document.getElementById("eventLink").value || "https://vit.ac.in";
 
-    // Header and Titles
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(24);
-    doc.text(title, 105, 40, { align: "center" });
-    
+    // 3. Header Styling
+    doc.setFont("times", "bolditalic");
+    doc.setTextColor(26, 35, 126);
+    doc.setFontSize(28);
+    doc.text(title, 105, 50, { align: "center" });
+
+    // 4. Content
+    doc.setTextColor(0, 0, 0);
     doc.setFont("helvetica", "normal");
+    doc.setFontSize(14);
+    doc.text("You are cordially invited to attend", 105, 70, { align: "center" });
+    
     doc.setFontSize(16);
-    doc.text(subtitle, 105, 50, { align: "center" });
+    doc.text(`${date} | ${venue}`, 105, 90, { align: "center" });
 
-    // Details Section
-    doc.setDrawColor(63, 81, 181); // Blue border line
-    doc.line(20, 65, 190, 65);
-    doc.setFontSize(12);
-    doc.text(`Date: ${date}`, 20, 80);
-    doc.text(`Venue: ${venue}`, 20, 90);
-
-    // QR Code Logic
+    // 5. QR Code
+    const qrLink = document.getElementById("eventLink").value || "https://vit.ac.in";
     const qrDiv = document.createElement("div");
     new QRCode(qrDiv, qrLink);
-    const qrCanvas = qrDiv.querySelector("canvas");
-    if (qrCanvas) {
-        const qrData = qrCanvas.toDataURL("image/png");
-        doc.addImage(qrData, 'PNG', 150, 75, 40, 40);
-        doc.setFontSize(8);
-        doc.text("Scan for Details", 170, 118, { align: "center" });
-    }
-
-    // Coordinators at the bottom
-    doc.setFontSize(12);
-    doc.text(`Faculty Coordinator: ${faculty}`, 20, 150);
-    doc.text(`Student Coordinator: ${student}`, 20, 160);
-
-    doc.save("VIT_Invitation.pdf");
+    setTimeout(() => {
+        const qrCanvas = qrDiv.querySelector("canvas");
+        if (qrCanvas) {
+            const qrData = qrCanvas.toDataURL("image/png");
+            doc.addImage(qrData, 'PNG', 85, 110, 40, 40);
+        }
+        doc.save("Official_Invitation.pdf");
+    }, 500);
 };
