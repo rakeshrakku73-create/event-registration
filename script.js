@@ -10,95 +10,81 @@ const getBase64 = (file) => {
 window.downloadPDF = async function () {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const w = 210;
-    const h = 297;
+    
+    // Show an alert so you know the button was clicked
+    alert("Generating Invitation... Please wait a few seconds.");
 
-    doc.setFillColor(253, 253, 255);
-    doc.rect(0, 0, w, h, 'F');
-    doc.setDrawColor(26, 35, 126);
-    doc.setLineWidth(1.5);
-    doc.rect(5, 5, w - 10, h - 10);
-    doc.setLineWidth(0.5);
-    doc.rect(7, 7, w - 14, h - 14);
+    try {
+        const title = document.getElementById("title").value || "EVENT TITLE";
+        const subtitle = document.getElementById("subtitle").value || "";
+        const desc = document.getElementById("description").value || "";
+        const date = document.getElementById("date").value || "";
+        const time = document.getElementById("time").value || "";
+        const venue = document.getElementById("venue").value || "";
+        const faculty = document.getElementById("facultyName").value || "Faculty";
+        const student = document.getElementById("studentName").value || "Student";
 
-    const title = document.getElementById("title").value || "EVENT TITLE";
-    const subtitle = document.getElementById("subtitle").value || "SUBTITLE";
-    const desc = document.getElementById("description").value || "";
-    const date = document.getElementById("date").value || "TBA";
-    const time = document.getElementById("time").value || "TBA";
-    const venue = document.getElementById("venue").value || "TBA";
-    const guest1Name = document.getElementById("guest1Name").value || "";
-    const guest1Role = document.getElementById("guest1Role").value || "";
-    const guest2Name = document.getElementById("guest2Name").value || "";
-    const guest2Role = document.getElementById("guest2Role").value || "";
-    const faculty = document.getElementById("facultyName").value || "Faculty";
-    const student = document.getElementById("studentName").value || "Student";
+        // Background & Borders
+        doc.setFillColor(252, 252, 255);
+        doc.rect(0, 0, 210, 297, 'F');
+        doc.setDrawColor(26, 35, 126);
+        doc.setLineWidth(1);
+        doc.rect(5, 5, 200, 287);
 
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(26, 35, 126);
-    doc.setFontSize(26);
-    doc.text(title.toUpperCase(), w / 2, 40, { align: "center" });
-    doc.setFontSize(14);
-    doc.setTextColor(100, 100, 100);
-    doc.text(subtitle, w / 2, 50, { align: "center" });
+        // Header
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(26, 35, 126);
+        doc.setFontSize(24);
+        doc.text(title.toUpperCase(), 105, 30, { align: "center" });
 
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    const splitDesc = doc.splitTextToSize(desc, 160);
-    doc.text(splitDesc, w / 2, 65, { align: "center" });
+        // Guest Photos (The main reason for crashes)
+        doc.setFillColor(30, 136, 229);
+        doc.roundedRect(25, 80, 75, 90, 5, 5, 'F');
+        doc.roundedRect(110, 80, 75, 90, 5, 5, 'F');
 
-    doc.setFillColor(30, 136, 229);
-    doc.roundedRect(25, 100, 75, 85, 8, 8, 'F');
-    doc.roundedRect(110, 100, 75, 85, 8, 8, 'F');
-
-    const g1Photo = document.getElementById("guest1Photo").files[0];
-    if (g1Photo) {
-        const b64 = await getBase64(g1Photo);
-        doc.addImage(b64, 'JPEG', 35, 105, 55, 45);
-    }
-    const g2Photo = document.getElementById("guest2Photo").files[0];
-    if (g2Photo) {
-        const b64 = await getBase64(g2Photo);
-        doc.addImage(b64, 'JPEG', 120, 105, 55, 45);
-    }
-
-    doc.setTextColor(255, 255, 255);
-    doc.text(guest1Name, 62.5, 165, { align: "center" });
-    doc.text(guest1Role, 62.5, 175, { align: "center" });
-    doc.text(guest2Name, 147.5, 165, { align: "center" });
-    doc.text(guest2Role, 147.5, 175, { align: "center" });
-
-    doc.setTextColor(40, 40, 40);
-    doc.setFont("helvetica", "bold");
-    doc.text(`DATE    : ${date}`, 30, 210);
-    doc.text(`TIME    : ${time}`, 30, 220);
-    doc.text(`VENUE : ${venue}`, 30, 230);
-
-    const qrData = `EVENT: ${title}\nDATE: ${date}\nVENUE: ${venue}`;
-    const qrDiv = document.createElement("div");
-    new QRCode(qrDiv, { text: qrData, width: 128, height: 128 });
-
-    setTimeout(() => {
-        const canvas = qrDiv.querySelector("canvas");
-        if (canvas) {
-            const img = canvas.toDataURL("image/png");
-            doc.addImage(img, 'PNG', 150, 200, 35, 35);
-            doc.setTextColor(100, 100, 100);
-            doc.setFontSize(7);
-            doc.text("SCAN FOR DETAILS", 167.5, 240, { align: "center" });
+        const g1 = document.getElementById("guest1Photo").files[0];
+        if (g1) {
+            const b1 = await getBase64(g1);
+            doc.addImage(b1, 'JPEG', 35, 85, 55, 50);
         }
 
-        doc.setFillColor(149, 117, 205);
-        doc.roundedRect(25, 255, 75, 22, 5, 5, 'F');
-        doc.roundedRect(110, 255, 75, 22, 5, 5, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(8);
-        doc.text("FACULTY COORDINATOR", 62.5, 263, { align: "center" });
-        doc.text("STUDENT COORDINATOR", 147.5, 263, { align: "center" });
-        doc.setFontSize(10);
-        doc.text(faculty, 62.5, 272, { align: "center" });
-        doc.text(student, 147.5, 272, { align: "center" });
+        const g2 = document.getElementById("guest2Photo").files[0];
+        if (g2) {
+            const b2 = await getBase64(g2);
+            doc.addImage(b2, 'JPEG', 120, 85, 55, 50);
+        }
 
-        doc.save("VIT_Invitation.pdf");
-    }, 600);
+        // Details
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(12);
+        doc.text(`Date: ${date}`, 30, 200);
+        doc.text(`Time: ${time}`, 30, 210);
+        doc.text(`Venue: ${venue}`, 30, 220);
+
+        // QR Code
+        const qrData = `Event: ${title}\nVenue: ${venue}`;
+        const qrDiv = document.createElement("div");
+        new QRCode(qrDiv, { text: qrData, width: 100, height: 100 });
+
+        setTimeout(() => {
+            const canvas = qrDiv.querySelector("canvas");
+            if (canvas) {
+                const img = canvas.toDataURL("image/png");
+                doc.addImage(img, 'PNG', 140, 190, 40, 40);
+            }
+            
+            // Bottom Boxes
+            doc.setFillColor(149, 117, 205);
+            doc.roundedRect(25, 250, 75, 20, 5, 5, 'F');
+            doc.roundedRect(110, 250, 75, 20, 5, 5, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.text(faculty, 62.5, 263, { align: "center" });
+            doc.text(student, 147.5, 263, { align: "center" });
+
+            doc.save("Final_Invitation.pdf");
+        }, 1000);
+
+    } catch (err) {
+        alert("Error: " + err.message);
+    }
 };
